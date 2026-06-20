@@ -11,10 +11,13 @@ GitHub Actions. See `AGENTS.md` for the agent/skill layer and
 ## Golden rules
 - **Use the skills.** `product-owner` to scope, `ux-designer` for flows, `design`
   for UI, `integration` for Firebase/Claude/deploy, `scaffold-app` to start a new
-  app, `claude-feature` for AI work, `test-automation` for tests.
+  app, `claude-feature` for AI work, `test-automation` for tests, `ops-monitor`
+  for pipeline/Pages health.
 - **Run the chain for features:** `product-owner` → `ux-designer` →
   `app-architect` → build agents → `qa-engineer`. Skip straight to a build agent
   for trivial tweaks. See `AGENTS.md`.
+- **Route by `.claude/context/routing.md`** — it maps an intent or a failure
+  signal to the agent + skill to spin up. Check `npm run status` for deploy health.
 - **Read `.claude/context/account-repos.md`** before building — reuse patterns
   from `mercato` (open/collab) or `CleanFit` (auth) instead of reinventing.
 - **Tokens-only CSS**, mobile-first, one accent color.

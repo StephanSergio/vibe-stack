@@ -9,7 +9,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "typecheck": "tsc -b",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "status": "node scripts/status.mjs",
+    "status:json": "node scripts/status.mjs --json",
+    "repos:sync": "node scripts/sync-repos.mjs"
   },
   "dependencies": {
     "firebase": "^12.15.0",

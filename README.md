@@ -22,15 +22,16 @@ src/styles/globals.css   Nordic-minimal design tokens
 functions/index.js       generic Claude proxy (keeps the API key server-side)
 firestore.rules          two security postures — pick one
 .github/workflows/       GitHub Pages deploy
+scripts/                 status.mjs (CI + Pages monitor) · sync-repos.mjs
 docs/ARCHITECTURE.md     how the pieces fit + trade-offs
-AGENTS.md                the agent/skill layer
+AGENTS.md                the agent/skill layer + monitoring/dispatch
 .claude/
   skills/                product-owner · ux-designer · design · integration ·
-                         scaffold-app · claude-feature · test-automation
+                         scaffold-app · claude-feature · test-automation · ops-monitor
   agents/                product-owner · ux-designer · app-architect ·
                          firebase-integrator · ui-designer ·
-                         claude-feature-builder · qa-engineer
-  context/account-repos.md   shared context on the account's apps
+                         claude-feature-builder · qa-engineer · release-monitor
+  context/               account-repos.md (live repo index) · routing.md (dispatch)
 ```
 
 ## Quick start
@@ -70,7 +71,23 @@ This repo is set up to be built *by* an agent. The flow:
 6. **Ship** — push to `main`.
 
 Agents read `.claude/context/account-repos.md` to reuse patterns across the
-portfolio. See `AGENTS.md`.
+portfolio, and `.claude/context/routing.md` to decide which agent handles what.
+See `AGENTS.md`.
+
+### Monitor the pipeline & Pages
+
+```bash
+npm run status        # latest CI run + Pages health for every repo in the account
+npm run status -- mercato   # filter to one or more repos
+npm run status:json   # machine-readable (the release-monitor agent parses this)
+npm run repos:sync    # refresh the live repo index in account-repos.md
+```
+
+Thin wrappers over the GitHub CLI (`gh auth status` required) — no tokens stored.
+`status` exits non-zero if any repo's pipeline failed or Pages errored, so it can
+gate CI or feed an alert. The `release-monitor` agent turns a red status into a
+diagnosis and routes the fix to the right agent via `routing.md`. Run it on an
+interval (`/loop`, cron, or a scheduled cloud agent) for a continuous watch.
 
 ## The stack at a glance
 
