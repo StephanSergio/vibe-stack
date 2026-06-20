@@ -9,9 +9,12 @@ GitHub Actions. See `AGENTS.md` for the agent/skill layer and
 `docs/ARCHITECTURE.md` for how the pieces fit.
 
 ## Golden rules
-- **Use the skills.** `design` for UI, `integration` for Firebase/Claude/deploy,
-  `scaffold-app` to start a new app, `claude-feature` for AI work.
-- **Plan non-trivial work** with the `app-architect` agent before editing.
+- **Use the skills.** `product-owner` to scope, `ux-designer` for flows, `design`
+  for UI, `integration` for Firebase/Claude/deploy, `scaffold-app` to start a new
+  app, `claude-feature` for AI work, `test-automation` for tests.
+- **Run the chain for features:** `product-owner` → `ux-designer` →
+  `app-architect` → build agents → `qa-engineer`. Skip straight to a build agent
+  for trivial tweaks. See `AGENTS.md`.
 - **Read `.claude/context/account-repos.md`** before building — reuse patterns
   from `mercato` (open/collab) or `CleanFit` (auth) instead of reinventing.
 - **Tokens-only CSS**, mobile-first, one accent color.

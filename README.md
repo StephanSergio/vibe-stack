@@ -25,8 +25,11 @@ firestore.rules          two security postures — pick one
 docs/ARCHITECTURE.md     how the pieces fit + trade-offs
 AGENTS.md                the agent/skill layer
 .claude/
-  skills/                design · integration · scaffold-app · claude-feature
-  agents/                app-architect · ui-designer · firebase-integrator · claude-feature-builder
+  skills/                product-owner · ux-designer · design · integration ·
+                         scaffold-app · claude-feature · test-automation
+  agents/                product-owner · ux-designer · app-architect ·
+                         firebase-integrator · ui-designer ·
+                         claude-feature-builder · qa-engineer
   context/account-repos.md   shared context on the account's apps
 ```
 
@@ -59,10 +62,12 @@ Follow the **`scaffold-app`** skill. The short version:
 
 This repo is set up to be built *by* an agent. The flow:
 
-1. **Plan** with the `app-architect` agent (data model → screens → AI → order).
-2. **Implement** with `firebase-integrator`, `ui-designer`, `claude-feature-builder`.
-3. **Verify** — `npm run typecheck && npm run lint && npm run build`.
-4. **Ship** — push to `main`.
+1. **Define** with `product-owner` (stories → acceptance criteria → MVP).
+2. **Shape** with `ux-designer` (flows → navigation → interaction states).
+3. **Plan** with `app-architect` (data model → screens → AI → build order).
+4. **Implement** with `firebase-integrator`, `ui-designer`, `claude-feature-builder`.
+5. **Test** with `qa-engineer`; **verify** — `npm run typecheck && npm run lint && npm run test && npm run build`.
+6. **Ship** — push to `main`.
 
 Agents read `.claude/context/account-repos.md` to reuse patterns across the
 portfolio. See `AGENTS.md`.
