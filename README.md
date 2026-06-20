@@ -22,12 +22,14 @@ src/styles/globals.css   Nordic-minimal design tokens
 functions/index.js       generic Claude proxy (keeps the API key server-side)
 firestore.rules          two security postures — pick one
 .github/workflows/       GitHub Pages deploy
-scripts/                 status.mjs (CI + Pages monitor) · sync-repos.mjs
+scripts/                 status.mjs (CI + Pages monitor) · sync-repos.mjs ·
+                         workspace.mjs (pull/branch/push related projects)
 docs/ARCHITECTURE.md     how the pieces fit + trade-offs
 AGENTS.md                the agent/skill layer + monitoring/dispatch
 .claude/
   skills/                product-owner · ux-designer · design · integration ·
-                         scaffold-app · claude-feature · test-automation · ops-monitor
+                         scaffold-app · claude-feature · test-automation ·
+                         ops-monitor · project-workspace
   agents/                product-owner · ux-designer · app-architect ·
                          firebase-integrator · ui-designer ·
                          claude-feature-builder · qa-engineer · release-monitor
@@ -88,6 +90,41 @@ Thin wrappers over the GitHub CLI (`gh auth status` required) — no tokens stor
 gate CI or feed an alert. The `release-monitor` agent turns a red status into a
 diagnosis and routes the fix to the right agent via `routing.md`. Run it on an
 interval (`/loop`, cron, or a scheduled cloud agent) for a continuous watch.
+
+### Work on related projects (cross-project workspace)
+
+vibe-stack can pull any repo in the account into a local **workspace**, branch
+it, edit it, and push **straight back to that project's own repo and branch**:
+
+```bash
+npm run ws list                      # account repos + what's checked out
+npm run ws add mercato fix/login     # clone into workspace/mercato on branch fix/login
+npm run ws status                    # branch + ahead/behind + uncommitted, per project
+npm run ws push mercato -m "fix"     # commit (if -m) and push to origin/fix/login
+```
+
+`workspace/` is **gitignored** — the projects are never committed into this
+template. Each one is a normal clone with its own `origin`, so an agent gets a
+single working tree containing vibe-stack *and* every project it pulled, can
+cross-reference patterns, and pushes changes home with an ordinary `git push`.
+
+A safety guard refuses to push to a project's **default branch** unless you pass
+`--allow-default` — work on feature branches and open a PR (or merge) from the
+compare link it prints.
+
+**Why a workspace of clones, not `git subtree`?** It's deliberate:
+
+| | `git subtree` into vibe-stack | workspace of clones (this) |
+|---|---|---|
+| Template stays clean | ❌ projects get committed into the template repo | ✅ `workspace/` is gitignored |
+| Push back to project | `git subtree push` recomputes split history each time | ✅ plain `git push` to the clone's own origin |
+| History | merge/split commits clutter both repos | ✅ each repo keeps its own clean history |
+| Two-way drift | easy to diverge and hard to reconcile | ✅ no rejoin step to get wrong |
+| Agent ergonomics | one tree, but entangled histories | ✅ one tree, independent repos |
+
+The one thing subtree gives that this doesn't is a *single atomic commit spanning
+vibe-stack + a project* — which you almost never want, and which would couple the
+template to the projects anyway.
 
 ## The stack at a glance
 

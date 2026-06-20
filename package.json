@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "status": "node scripts/status.mjs",
     "status:json": "node scripts/status.mjs --json",
-    "repos:sync": "node scripts/sync-repos.mjs"
+    "repos:sync": "node scripts/sync-repos.mjs",
+    "ws": "node scripts/workspace.mjs"
   },
   "dependencies": {
     "firebase": "^12.15.0",

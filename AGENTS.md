@@ -58,6 +58,7 @@ plan → build → tested & shipped.
 - **`claude-feature`** — add an AI feature end-to-end.
 - **`test-automation`** — Vitest + RTL + Playwright, with Firebase/Claude mocked, gating deploy.
 - **`ops-monitor`** — watch CI pipelines + GitHub Pages across repos and triage failures.
+- **`project-workspace`** — pull a related repo into a local workspace, branch it, and push changes back to its own repo/branch.
 
 ## Shared context (`.claude/context/`)
 
@@ -84,6 +85,12 @@ The `release-monitor` agent runs `status:json`, reads failing run logs, and uses
 `routing.md` to name the agent + skill that should fix each failure. Drive
 `npm run status` on an interval (e.g. `/loop`, cron, or a scheduled cloud agent)
 for a continuous watch; act on a non-zero exit.
+
+To act on another repo, `scripts/workspace.mjs` (`npm run ws …`, the
+`project-workspace` skill) clones it into a gitignored `workspace/`, branches it,
+and pushes changes back to **its own** repo/branch — plain clones, not
+`git subtree`, so the template stays clean and pushes are ordinary `git push`.
+A guard refuses pushing to a project's default branch without `--allow-default`.
 
 ## How to drive it
 

@@ -32,3 +32,7 @@ functions/node_modules
 *.njsproj
 *.sln
 *.sw?
+
+# Cross-project workspace — real clones of related repos, never committed
+# (keeps this template clean). Managed by scripts/workspace.mjs.
+workspace/
