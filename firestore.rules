@@ -1,0 +1,41 @@
+rules_version = '2';
+
+// ============================================================
+// vibe-stack — Firestore rules (starter)
+// ------------------------------------------------------------
+// Two common postures. Pick ONE per collection and delete the other.
+//
+//   1. OPEN (no auth) — fine for a private family/personal app shared
+//      only with people you trust. Anyone with the public Firebase
+//      config can read/write. (This is what `mercato` uses.)
+//
+//   2. AUTH-GUARDED — require a signed-in user. Pair with Firebase
+//      Auth (e.g. Google / email). (This is the direction `CleanFit`
+//      takes.) Tighten further with per-user ownership checks.
+// ============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Posture 1: OPEN (no auth) ──
+    // match /items/{doc} {
+    //   allow read, write: if true;
+    // }
+
+    // ── Posture 2: AUTH-GUARDED ──
+    match /items/{doc} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Per-user ownership example (each doc carries an `ownerId` field):
+    // match /entries/{doc} {
+    //   allow read, write: if request.auth != null
+    //                      && request.auth.uid == resource.data.ownerId;
+    // }
+
+    // Everything not explicitly matched stays locked.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
